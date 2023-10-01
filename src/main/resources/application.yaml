@@ -15,3 +15,7 @@ spring:
 token:
   signing:
     key: ${SIGNING_KEY}
+
+logging:
+  level:
+    org.hibernate: DEBUG
