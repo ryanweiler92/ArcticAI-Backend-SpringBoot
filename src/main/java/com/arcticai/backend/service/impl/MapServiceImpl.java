@@ -3,6 +3,7 @@ package com.arcticai.backend.service.impl;
 import com.arcticai.backend.dao.request.MapUpdateRequest;
 import com.arcticai.backend.entities.Map;
 import com.arcticai.backend.repository.MapRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,11 @@ public class MapServiceImpl implements MapService {
     public List<Map> getMapsByUserId(Integer userId) {
         return mapRepository.findAllByUserId(userId);
     }
+
+    public Map getMapById(Integer mapId) {
+        return mapRepository.findMapById(mapId);
+    }
+
 
     public void deleteMapById(Integer mapId) {
         mapRepository.deleteById(mapId);

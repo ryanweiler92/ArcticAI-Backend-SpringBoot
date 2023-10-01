@@ -10,6 +10,8 @@ public interface MapService {
 
     List<Map> getMapsByUserId(Integer userId);
 
+    Map getMapById(Integer mapId);
+
     void deleteMapById(Integer mapId);
 
     boolean doesMapBelongToUser(Integer mapId, Integer userId);

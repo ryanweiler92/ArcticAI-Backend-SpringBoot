@@ -10,4 +10,6 @@ public interface MapRepository extends JpaRepository<Map, Integer> {
     // Find all maps associated with a specific user_id
     List<Map> findAllByUserId(Integer userId);
 
+    Map findMapById(Integer mapId);
+
 }

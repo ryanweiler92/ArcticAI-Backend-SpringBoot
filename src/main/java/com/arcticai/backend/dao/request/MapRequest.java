@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
@@ -21,4 +22,5 @@ public class MapRequest {
     private Double longitude;
     private Date createdAt;
     private Date updatedAt;
+    private List<LayerRequest> layers;
 }

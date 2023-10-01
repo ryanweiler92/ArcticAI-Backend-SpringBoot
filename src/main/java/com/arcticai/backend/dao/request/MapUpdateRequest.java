@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class MapUpdateRequest {
     private Integer zoom;
     private Double latitude;
     private Double longitude;
+    private List<LayerRequest> layers;
 }

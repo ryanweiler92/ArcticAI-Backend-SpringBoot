@@ -52,8 +52,8 @@ public class Map {
 //    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
 //    private List<Marker> markers;
 //
-//    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
-//    private List<Layer> layers;
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Layer> layers;
 
     @CreationTimestamp
     private Date createdAt;

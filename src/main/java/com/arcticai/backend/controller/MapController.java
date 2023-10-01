@@ -1,7 +1,9 @@
 package com.arcticai.backend.controller;
 
+import com.arcticai.backend.dao.request.LayerRequest;
 import com.arcticai.backend.dao.request.MapRequest;
 import com.arcticai.backend.dao.request.MapUpdateRequest;
+import com.arcticai.backend.entities.Layer;
 import com.arcticai.backend.entities.Map;
 
 import com.arcticai.backend.entities.User;
@@ -30,7 +32,19 @@ public class MapController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         User user = userService.findByEmail(userDetails.getUsername());
 
+        // Convert layers from the incoming map request to Layer entities and set them to the map
+        List<Layer> layers = map.getLayers().stream().map(layerRequest -> {
+            Layer layer = new Layer();
+            layer.setTitle(layerRequest.getTitle());
+            layer.setOrder(layerRequest.getOrder());
+            layer.setVisibility(layerRequest.getVisibility());
+            layer.setMap(map); // Set the map to the layer
+            return layer;
+        }).collect(Collectors.toList());
+
+        map.setLayers(layers); // Set the list of layers to the map
         map.setUser(user);
+
         Map savedMap = mapService.saveMap(map);
 
         return ResponseEntity.ok(convertToDTO(savedMap));
@@ -72,7 +86,23 @@ public class MapController {
         User user = userService.findByEmail(userDetails.getUsername());
 
         if (mapService.doesMapBelongToUser(mapId, user.getId())) {
-            Map updatedMap = mapService.updateMap(mapId, request);
+            Map existingMap = mapService.getMapById(mapId); // Fetch the existing map
+
+            // Convert layers from the request to Layer entities
+            List<Layer> newLayers = request.getLayers().stream().map(layerRequest -> {
+                Layer layer = new Layer();
+                layer.setTitle(layerRequest.getTitle());
+                layer.setOrder(layerRequest.getOrder());
+                layer.setVisibility(layerRequest.getVisibility());
+                layer.setMap(existingMap); // Set the existing map to the layer
+                return layer;
+            }).collect(Collectors.toList());
+
+            existingMap.getLayers().clear(); // Clear existing layers. Orphaned layers will be deleted.
+            existingMap.getLayers().addAll(newLayers); // Add the new layers
+
+            Map updatedMap = mapService.saveMap(existingMap); // Save the updated map with the layers
+
             return ResponseEntity.ok(convertToDTO(updatedMap));
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -91,6 +121,19 @@ public class MapController {
         dto.setLongitude(map.getLongitude());
         dto.setCreatedAt(map.getCreatedAt());
         dto.setUpdatedAt(map.getUpdatedAt());
+
+        // Convert layers from the map entity to LayerRequest DTOs
+        List<LayerRequest> layers = map.getLayers().stream().map(layer -> {
+            LayerRequest layerDto = new LayerRequest();
+            layerDto.setId(layer.getId());
+            layerDto.setTitle(layer.getTitle());
+            layerDto.setOrder(layer.getOrder());
+            layerDto.setVisibility(layer.getVisibility());
+            return layerDto;
+        }).collect(Collectors.toList());
+
+        dto.setLayers(layers); // Set the layers to the map DTO
+
         return dto;
     }
 
