@@ -37,21 +37,21 @@ public class Map {
     @Column(length = 255)
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private Integer saveSlot;
 
-    @Column
+    @Column(nullable = false)
     private Integer zoom;
 
-    @Column
+    @Column(nullable = false)
     private Double latitude;
 
-    @Column
+    @Column(nullable = false)
     private Double longitude;
 
-//    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL)
-//    private List<Marker> markers;
-//
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Marker> markers;
+
     @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Layer> layers;
 

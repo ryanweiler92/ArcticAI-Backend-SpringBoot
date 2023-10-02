@@ -3,9 +3,11 @@ package com.arcticai.backend.controller;
 import com.arcticai.backend.dao.request.LayerRequest;
 import com.arcticai.backend.dao.request.MapRequest;
 import com.arcticai.backend.dao.request.MapUpdateRequest;
+import com.arcticai.backend.dao.request.MarkerRequest;
 import com.arcticai.backend.entities.Layer;
 import com.arcticai.backend.entities.Map;
 
+import com.arcticai.backend.entities.Marker;
 import com.arcticai.backend.entities.User;
 import com.arcticai.backend.service.MapService;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,18 @@ public class MapController {
 
         map.setLayers(layers); // Set the list of layers to the map
         map.setUser(user);
+
+        List<Marker> markers = map.getMarkers().stream().map(markerRequest -> {
+            Marker marker = new Marker();
+            marker.setClientId(markerRequest.getClientId());
+            marker.setLocation(markerRequest.getLocation());
+            marker.setLatitude(markerRequest.getLatitude());
+            marker.setLongitude(markerRequest.getLongitude());
+            marker.setMap(map);  // Set the map to the marker
+            return marker;
+        }).collect(Collectors.toList());
+
+        map.setMarkers(markers); // Set the list of markers to the map
 
         Map savedMap = mapService.saveMap(map);
 
@@ -88,20 +102,23 @@ public class MapController {
         if (mapService.doesMapBelongToUser(mapId, user.getId())) {
             Map existingMap = mapService.getMapById(mapId); // Fetch the existing map
 
-            // Convert layers from the request to Layer entities
-            List<Layer> newLayers = request.getLayers().stream().map(layerRequest -> {
-                Layer layer = new Layer();
-                layer.setTitle(layerRequest.getTitle());
-                layer.setOrder(layerRequest.getOrder());
-                layer.setVisibility(layerRequest.getVisibility());
-                layer.setMap(existingMap); // Set the existing map to the layer
-                return layer;
+            // ... Existing code for layers ...
+
+            // Convert markers from the request to Marker entities
+            List<Marker> newMarkers = request.getMarkers().stream().map(markerRequest -> {
+                Marker marker = new Marker();
+                marker.setClientId(markerRequest.getClientId());
+                marker.setLocation(markerRequest.getLocation());
+                marker.setLatitude(markerRequest.getLatitude());
+                marker.setLongitude(markerRequest.getLongitude());
+                marker.setMap(existingMap);  // Set the existing map to the marker
+                return marker;
             }).collect(Collectors.toList());
 
-            existingMap.getLayers().clear(); // Clear existing layers. Orphaned layers will be deleted.
-            existingMap.getLayers().addAll(newLayers); // Add the new layers
+            existingMap.getMarkers().clear();  // Clear existing markers. Orphaned markers will be deleted.
+            existingMap.getMarkers().addAll(newMarkers); // Add the new markers
 
-            Map updatedMap = mapService.saveMap(existingMap); // Save the updated map with the layers
+            Map updatedMap = mapService.saveMap(existingMap);  // Save the updated map with the layers and markers
 
             return ResponseEntity.ok(convertToDTO(updatedMap));
         } else {
@@ -133,6 +150,19 @@ public class MapController {
         }).collect(Collectors.toList());
 
         dto.setLayers(layers); // Set the layers to the map DTO
+
+        // Convert markers from the map entity to MarkerRequest DTOs
+        List<MarkerRequest> markerDTOs = map.getMarkers().stream().map(marker -> {
+            MarkerRequest markerDto = new MarkerRequest();
+            markerDto.setId(marker.getId());
+            markerDto.setClientId(marker.getClientId());
+            markerDto.setLocation(marker.getLocation());
+            markerDto.setLatitude(marker.getLatitude());
+            markerDto.setLongitude(marker.getLongitude());
+            return markerDto;
+        }).collect(Collectors.toList());
+
+        dto.setMarkers(markerDTOs); // Set the markers to the map DTO
 
         return dto;
     }

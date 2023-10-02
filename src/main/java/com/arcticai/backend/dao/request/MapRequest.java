@@ -23,4 +23,5 @@ public class MapRequest {
     private Date createdAt;
     private Date updatedAt;
     private List<LayerRequest> layers;
+    private List<MarkerRequest> markers;
 }
