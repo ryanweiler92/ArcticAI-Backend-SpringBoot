@@ -24,4 +24,5 @@ public class MapRequest {
     private Date updatedAt;
     private List<LayerRequest> layers;
     private List<MarkerRequest> markers;
+    private List<RouteRequest> routes;
 }

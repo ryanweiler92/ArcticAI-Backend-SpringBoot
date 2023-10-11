@@ -19,4 +19,5 @@ public class MapUpdateRequest {
     private Double longitude;
     private List<LayerRequest> layers;
     private List<MarkerRequest> markers;
+    private List<RouteRequest> routes;
 }

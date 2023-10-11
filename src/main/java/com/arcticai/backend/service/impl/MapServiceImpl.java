@@ -28,7 +28,6 @@ public class MapServiceImpl implements MapService {
         return mapRepository.findMapById(mapId);
     }
 
-
     public void deleteMapById(Integer mapId) {
         mapRepository.deleteById(mapId);
     }

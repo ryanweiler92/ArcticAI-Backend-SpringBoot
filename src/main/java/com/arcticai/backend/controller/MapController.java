@@ -4,11 +4,9 @@ import com.arcticai.backend.dao.request.LayerRequest;
 import com.arcticai.backend.dao.request.MapRequest;
 import com.arcticai.backend.dao.request.MapUpdateRequest;
 import com.arcticai.backend.dao.request.MarkerRequest;
-import com.arcticai.backend.entities.Layer;
-import com.arcticai.backend.entities.Map;
+import com.arcticai.backend.dao.request.RouteRequest;
+import com.arcticai.backend.entities.*;
 
-import com.arcticai.backend.entities.Marker;
-import com.arcticai.backend.entities.User;
 import com.arcticai.backend.service.MapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,6 +57,20 @@ public class MapController {
 
         map.setMarkers(markers); // Set the list of markers to the map
 
+        List<Route> routes = map.getRoutes().stream().map(routeRequest -> {
+            Route route = new Route();
+            route.setId(routeRequest.getId());
+            route.setStartCoords(routeRequest.getStartCoords());
+            route.setEndCoords(routeRequest.getEndCoords());
+            route.setMarkersIds(routeRequest.getMarkersIds());
+            route.setRouteName(routeRequest.getRouteName());
+            route.setColor(routeRequest.getColor());
+            route.setMap(map);  // Set the map to the route
+            return route;
+        }).collect(Collectors.toList());
+
+        map.setRoutes(routes); // Set the list of routes to the map
+
         Map savedMap = mapService.saveMap(map);
 
         return ResponseEntity.ok(convertToDTO(savedMap));
@@ -102,7 +114,13 @@ public class MapController {
         if (mapService.doesMapBelongToUser(mapId, user.getId())) {
             Map existingMap = mapService.getMapById(mapId); // Fetch the existing map
 
-            // ... Existing code for layers ...
+            // Update the Map properties
+            existingMap.setName(request.getName());
+            existingMap.setDescription(request.getDescription());
+//            existingMap.setSaveSlot(request.getSaveSlot());
+            existingMap.setZoom(request.getZoom());
+            existingMap.setLatitude(request.getLatitude());
+            existingMap.setLongitude(request.getLongitude());
 
             // Convert markers from the request to Marker entities
             List<Marker> newMarkers = request.getMarkers().stream().map(markerRequest -> {
@@ -117,6 +135,22 @@ public class MapController {
 
             existingMap.getMarkers().clear();  // Clear existing markers. Orphaned markers will be deleted.
             existingMap.getMarkers().addAll(newMarkers); // Add the new markers
+
+            // Convert routes from the request to Route entities
+            List<Route> newRoutes = request.getRoutes().stream().map(routeRequest -> {
+                Route route = new Route();
+                route.setId(routeRequest.getId());
+                route.setStartCoords(routeRequest.getStartCoords());
+                route.setEndCoords(routeRequest.getEndCoords());
+                route.setMarkersIds(routeRequest.getMarkersIds());
+                route.setRouteName(routeRequest.getRouteName());
+                route.setColor(routeRequest.getColor());
+                route.setMap(existingMap);  // Set the existing map to the route
+                return route;
+            }).collect(Collectors.toList());
+
+            existingMap.getRoutes().clear();  // Clear existing routes. Orphaned routes will be deleted.
+            existingMap.getRoutes().addAll(newRoutes); // Add the new routes
 
             Map updatedMap = mapService.saveMap(existingMap);  // Save the updated map with the layers and markers
 
@@ -163,6 +197,19 @@ public class MapController {
         }).collect(Collectors.toList());
 
         dto.setMarkers(markerDTOs); // Set the markers to the map DTO
+
+        List<RouteRequest> routeDTOs = map.getRoutes().stream().map(route -> {
+            RouteRequest routeDto = new RouteRequest();
+            routeDto.setId(route.getId());
+            routeDto.setStartCoords(route.getStartCoords());
+            routeDto.setEndCoords(route.getEndCoords());
+            routeDto.setMarkersIds(route.getMarkersIds());
+            routeDto.setRouteName(route.getRouteName());
+            routeDto.setColor(route.getColor());
+            return routeDto;
+        }).collect(Collectors.toList());
+
+        dto.setRoutes(routeDTOs);
 
         return dto;
     }

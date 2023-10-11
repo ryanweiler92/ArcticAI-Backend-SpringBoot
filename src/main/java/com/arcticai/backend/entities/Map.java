@@ -55,6 +55,9 @@ public class Map {
     @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Layer> layers;
 
+    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Route> routes;
+
     @CreationTimestamp
     private Date createdAt;
 

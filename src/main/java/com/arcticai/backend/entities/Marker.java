@@ -18,7 +18,7 @@ public class Marker {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "map_id") // The column in this table that is a foreign key to map.
+    @JoinColumn(name = "map_id")
     private Map map;
 
     @Column
