@@ -60,8 +60,10 @@ public class MapController {
         List<Route> routes = map.getRoutes().stream().map(routeRequest -> {
             Route route = new Route();
             route.setId(routeRequest.getId());
-            route.setStartCoords(routeRequest.getStartCoords());
-            route.setEndCoords(routeRequest.getEndCoords());
+            route.setStartLat(routeRequest.getStartLat());
+            route.setStartLon(routeRequest.getStartLon());
+            route.setEndLat(routeRequest.getEndLat());
+            route.setEndLon(routeRequest.getEndLon());
             route.setMarkersIds(routeRequest.getMarkersIds());
             route.setRouteName(routeRequest.getRouteName());
             route.setColor(routeRequest.getColor());
@@ -140,9 +142,11 @@ public class MapController {
             List<Route> newRoutes = request.getRoutes().stream().map(routeRequest -> {
                 Route route = new Route();
                 route.setId(routeRequest.getId());
-                route.setStartCoords(routeRequest.getStartCoords());
-                route.setEndCoords(routeRequest.getEndCoords());
                 route.setMarkersIds(routeRequest.getMarkersIds());
+                route.setStartLat(routeRequest.getStartLat());
+                route.setStartLon(routeRequest.getStartLon());
+                route.setEndLat(routeRequest.getEndLat());
+                route.setEndLon(routeRequest.getEndLon());
                 route.setRouteName(routeRequest.getRouteName());
                 route.setColor(routeRequest.getColor());
                 route.setMap(existingMap);  // Set the existing map to the route
@@ -201,8 +205,10 @@ public class MapController {
         List<RouteRequest> routeDTOs = map.getRoutes().stream().map(route -> {
             RouteRequest routeDto = new RouteRequest();
             routeDto.setId(route.getId());
-            routeDto.setStartCoords(route.getStartCoords());
-            routeDto.setEndCoords(route.getEndCoords());
+            routeDto.setStartLat(route.getStartLat());
+            routeDto.setStartLon(route.getStartLon());
+            routeDto.setEndLat(route.getEndLat());
+            routeDto.setEndLon(route.getEndLon());
             routeDto.setMarkersIds(route.getMarkersIds());
             routeDto.setRouteName(route.getRouteName());
             routeDto.setColor(route.getColor());
