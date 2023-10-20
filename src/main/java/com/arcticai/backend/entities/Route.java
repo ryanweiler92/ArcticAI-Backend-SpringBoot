@@ -22,17 +22,11 @@ public class Route {
     @JoinColumn(name = "map_id")
     private Map map;
 
-//    @ElementCollection
-//    @CollectionTable(name = "startCoords")
-//    private List<Double> startCoords;
-//
-//    @ElementCollection
-//    @CollectionTable(name = "endCoords")
-//    private List<Double> endCoords;
-//
-    @ElementCollection
-    @CollectionTable(name = "markerIds")
-    private List<String> markersIds;
+    @Column
+    private String startMarkerId;
+
+    @Column
+    private String endMarkerId;
 
     @Column
     private Double startLat;

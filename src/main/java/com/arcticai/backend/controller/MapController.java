@@ -64,7 +64,8 @@ public class MapController {
             route.setStartLon(routeRequest.getStartLon());
             route.setEndLat(routeRequest.getEndLat());
             route.setEndLon(routeRequest.getEndLon());
-            route.setMarkersIds(routeRequest.getMarkersIds());
+            route.setStartMarkerId(routeRequest.getStartMarkerId());
+            route.setEndMarkerId(routeRequest.getEndMarkerId());
             route.setRouteName(routeRequest.getRouteName());
             route.setColor(routeRequest.getColor());
             route.setMap(map);  // Set the map to the route
@@ -142,7 +143,8 @@ public class MapController {
             List<Route> newRoutes = request.getRoutes().stream().map(routeRequest -> {
                 Route route = new Route();
                 route.setId(routeRequest.getId());
-                route.setMarkersIds(routeRequest.getMarkersIds());
+                route.setStartMarkerId(routeRequest.getStartMarkerId());
+                route.setEndMarkerId(routeRequest.getEndMarkerId());
                 route.setStartLat(routeRequest.getStartLat());
                 route.setStartLon(routeRequest.getStartLon());
                 route.setEndLat(routeRequest.getEndLat());
@@ -209,7 +211,8 @@ public class MapController {
             routeDto.setStartLon(route.getStartLon());
             routeDto.setEndLat(route.getEndLat());
             routeDto.setEndLon(route.getEndLon());
-            routeDto.setMarkersIds(route.getMarkersIds());
+            routeDto.setStartMarkerId(route.getStartMarkerId());
+            routeDto.setEndMarkerId(route.getEndMarkerId());
             routeDto.setRouteName(route.getRouteName());
             routeDto.setColor(route.getColor());
             return routeDto;

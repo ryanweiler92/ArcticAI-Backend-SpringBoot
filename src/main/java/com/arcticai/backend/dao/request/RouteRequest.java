@@ -13,9 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class RouteRequest {
     private String id;
-//    private List<Double> startCoords;
-//    private List<Double> endCoords;
-    private List<String> markersIds;
+    private String startMarkerId;
+    private String endMarkerId;
     private Double startLat;
     private Double startLon;
     private Double endLat;
